@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
 
+import classes from './BurgerBuilder.module.css';
+
 import Hux from '../../hoc/Hux';
+import Modal from '../../components/UI/Modal/Modal';
 import Burger from '../../components/Burger/Burger';
 import BuildControls from '../../components/Burger/BuildControls/BuildControls';
+import OrderSummary from '../../components/OrderSummary/OrderSummary';
 
 const INGREDIENT_PRICES = {
   salad: 0.5,
@@ -21,6 +25,8 @@ class BurgerBuilder extends Component {
       meat: 0,
     },
     totalPrice: 4,
+    purchasable: false,
+    purchasing: false,
   }
 
   addIngredientHandler = (type) => {
@@ -35,6 +41,7 @@ class BurgerBuilder extends Component {
     const newPrice = this.state.totalPrice + priceAddition;
 
     this.setState({totalPrice: newPrice, ingredients: updatedIngredients});
+    this.updatePurchasableState(updatedIngredients);
   }
   
   removeIngredientHandler =  (type) => {
@@ -49,6 +56,30 @@ class BurgerBuilder extends Component {
     const newPrice = this.state.totalPrice - priceReduction;
 
     this.setState({totalPrice: newPrice, ingredients: updatedIngredients});
+    this.updatePurchasableState(updatedIngredients);
+  }
+
+  updatePurchasableState (ingredients) {
+    const sum = Object.keys(ingredients)
+      .map(ingredient => {
+        return ingredients[ingredient];
+      })
+      .reduce((sum, value) => {
+        return sum + value;
+      }, 0);
+    this.setState({purchasable: sum > 0});
+  }
+
+  purchaseHandler = () => {
+    this.setState({purchasing: true});
+  }
+
+  modalClosedHandler = () => {
+    this.setState({purchasing: false});
+  }
+  
+  purchaseContinueHandler = () => {
+    alert('You continue!');
   }
 
   render () {
@@ -61,12 +92,40 @@ class BurgerBuilder extends Component {
 
     return (
       <Hux>
-        <Burger ingredients={this.state.ingredients}/>
-        <BuildControls 
-          ingredientAdded={this.addIngredientHandler}
-          ingredientRemoved={this.removeIngredientHandler}
-          disabled={disabledInfo}
-        />
+
+        <div className={classes.BurgerBuilder}>
+
+          <Modal 
+            visible={this.state.purchasing}
+            modalClosed={this.modalClosedHandler}
+          >
+            <OrderSummary 
+              ingredients={this.state.ingredients}
+              purchasable={this.state.purchasable}
+              price={this.state.totalPrice}
+              modalClosed={this.modalClosedHandler}
+              purchaseContinue={this.purchaseContinueHandler}
+            />
+          </Modal>
+
+          <Burger 
+            className={classes.Item}
+            ingredients={this.state.ingredients}
+          />
+
+          <BuildControls 
+            className={classes.Item}
+            price={this.state.totalPrice}
+            purchasable={this.state.purchasable}
+            purchasing={this.state.purchasing}
+            ingredientAdded={this.addIngredientHandler}
+            ingredientRemoved={this.removeIngredientHandler}
+            ordered={this.purchaseHandler}
+            disabled={disabledInfo}
+          />
+
+        </div>
+
       </Hux>
     );
   }
