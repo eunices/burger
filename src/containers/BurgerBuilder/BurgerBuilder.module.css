@@ -2,6 +2,7 @@
   display: flex;
   flex-flow: column nowrap;
   justify-content: space-between;
+  padding-bottom: 10px;
 }
 
 .Item {

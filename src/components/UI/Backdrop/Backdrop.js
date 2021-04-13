@@ -8,7 +8,10 @@ import classes from './Backdrop.module.css';
 const Backdrop = (props) => {
   return(
     props.visible ? 
-      <div className={classes.Backdrop} onClick={props.modalClosed}></div> 
+      <div 
+        className={classes.Backdrop} 
+        onClick={props.modalClosed}
+      ></div> 
       : 
       null
   );
