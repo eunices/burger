@@ -10,8 +10,12 @@ import Backdrop from '../Backdrop/Backdrop';
 class Modal extends Component {
 
   shouldComponentUpdate(nextProps, nextState) {
-    return (nextProps.visible !== this.props.visible);
-  } // update only when visible is different
+
+    // update only when visible is different
+    return (nextProps.visible !== this.props.visible) || 
+      (nextProps.children !== this.props.children);
+    // or when spinner appears
+  } 
 
   componentDidUpdate() {
     console.log('[Modal] Updated');
@@ -42,7 +46,7 @@ class Modal extends Component {
 };
 
 Modal.propTypes = {
-  children: PropTypes.node.isRequired,
+  children: PropTypes.node,
   visible: PropTypes.bool,
   modalClosed: PropTypes.func,
 };

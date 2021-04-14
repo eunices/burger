@@ -4,9 +4,9 @@ import PropTypes from 'prop-types';
 
 import classes from './Layout.module.css';
 
-import Hux from '../../hoc/Hux';
-import Toolbar from '../Navigation/Toolbar/Toolbar';
-import Sidedrawer from '../Navigation/Sidedrawer/Sidedrawer';
+import Hux from '../Hux';
+import Toolbar from '../../components/Navigation/Toolbar/Toolbar';
+import Sidedrawer from '../../components/Navigation/Sidedrawer/Sidedrawer';
 
 class Layout extends Component {
 
