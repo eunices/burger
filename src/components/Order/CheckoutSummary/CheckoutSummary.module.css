@@ -1,7 +1,7 @@
 .CheckoutSummary {
   text-align: center;
   width: 80%;
-  marign: auto;
+  margin: auto;
 }
 
 @media (min-width: 500px) {

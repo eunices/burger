@@ -8,8 +8,8 @@ const button = (props) => {
 
   return(
     <button 
-      className={[classes.Button, classes[props.buttonType]].join(' ')} 
-      onClick={props.clicked}
+      className={[classes.Button, classes[props.buttontype]].join(' ')} 
+      {...props}
     >
       {props.children}
     </button>
@@ -19,7 +19,7 @@ const button = (props) => {
 button.propTypes = {
   clicked: PropTypes.func,
   children: PropTypes.node.isRequired,
-  buttonType: PropTypes.string,
+  buttontype: PropTypes.string,
 };
 
 export default button;

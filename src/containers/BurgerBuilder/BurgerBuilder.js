@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import PropTypes from 'prop-types';
+
 import classes from './BurgerBuilder.module.css';
 
 import Hux from '../../hoc/Hux';
@@ -11,13 +13,8 @@ import BuildControls from '../../components/Burger/BuildControls/BuildControls';
 import OrderSummary from '../../components/OrderSummary/OrderSummary';
 import ax from '../../axios-orders';
 
-const INGREDIENT_PRICES = {
-  base: 2,
-  salad: 0.5,
-  bacon: 0.7,
-  cheese: 1,
-  meat: 1.3,  
-};
+import { INGREDIENT_PRICES } from '../../util/constants';
+import { sumTotalPrice, sumTotalIngredients } from '../../util/util';
 
 class BurgerBuilder extends Component {
 
@@ -36,12 +33,13 @@ class BurgerBuilder extends Component {
         const updatedIngredients = response.data;
         this.setState({ingredients: updatedIngredients});
 
-        const totalPrice = this.sumTotalPrice(updatedIngredients);
+        const totalPrice = sumTotalPrice(updatedIngredients);
         this.setState({totalPrice: totalPrice});
 
         this.updatePurchasableState(updatedIngredients);
       })
-      .catch(_error => {
+      .catch(error => {
+        console.log('Error: ', error.message);
         this.setState({errorWithIngredients: true});
       });
   }
@@ -76,28 +74,8 @@ class BurgerBuilder extends Component {
     this.updatePurchasableState(updatedIngredients);
   }
 
-  sumTotalPrice(ingredients) {
-    return Object.keys(ingredients)
-      .map(ingredient => {
-        return ingredients[ingredient] * INGREDIENT_PRICES[ingredient];
-      })
-      .reduce((sum, value) => {
-        return sum + value;
-      }, INGREDIENT_PRICES['base']);
-  }
-
-  sumTotalIngredients(ingredients) {
-    return Object.keys(ingredients)
-      .map(ingredient => {
-        return ingredients[ingredient];
-      })
-      .reduce((sum, value) => {
-        return sum + value;
-      }, 0);
-  }
-
   updatePurchasableState (ingredients) {
-    const sum = this.sumTotalIngredients(ingredients);
+    const sum = sumTotalIngredients(ingredients);
     this.setState({purchasable: sum > 0});
   }
 
@@ -112,29 +90,21 @@ class BurgerBuilder extends Component {
   purchaseContinueHandler = async () => {
     // alert('You continue!');
 
-    const order = {
-      ingredients: this.state.ingredients,
-      price: this.state.totalPrice, 
-      // calculate on server, potential for price manipulation
-      customer: {
-        name: 'Test Test',
-        address: 'Test Street',
-        zipcode: '124422',
-        country: 'Singapore',
-      },
-      email: 'test@test.com',
-      delivery: 'fastest',
-    };
-
     this.setState({loading: true});
-    
-    await ax.post('/orders.json', order)
-      .then(_response => {
-        this.setState({loading: false, purchasing: false});
-      })
-      .catch(_error => {
-        this.setState({loading: false, purchasing: false});
-      });
+    const { ingredients } = this.state;
+    const queryParams = [];
+    for (let i in ingredients) {
+      queryParams.push(
+        `${encodeURIComponent(i)}=${encodeURIComponent(ingredients[i])}`,
+      );
+    }
+    const queryString = '?' + queryParams.join('&');
+
+    this.props.history.push({
+      pathname: '/checkout',
+      search: queryString,
+    });
+
 
     
   }
@@ -203,5 +173,9 @@ class BurgerBuilder extends Component {
     );
   }
 }
+
+BurgerBuilder.propTypes = {
+  history: PropTypes.object,
+};
 
 export default withErrorHandler(BurgerBuilder, ax);
