@@ -8,7 +8,7 @@ import Button from '../UI/Button/Button';
 class orderSummary extends Component {
 
   componentDidUpdate() {
-    console.log('[Order summary] updated');
+    // console.log('[Order summary] updated');
   }
 
   render() {

@@ -12,6 +12,7 @@ import OrderSummary from '../../components/OrderSummary/OrderSummary';
 import ax from '../../axios-orders';
 
 const INGREDIENT_PRICES = {
+  base: 2,
   salad: 0.5,
   bacon: 0.7,
   cheese: 1,
@@ -34,9 +35,13 @@ class BurgerBuilder extends Component {
       .then(response => {
         const updatedIngredients = response.data;
         this.setState({ingredients: updatedIngredients});
+
+        const totalPrice = this.sumTotalPrice(updatedIngredients);
+        this.setState({totalPrice: totalPrice});
+
         this.updatePurchasableState(updatedIngredients);
       })
-      .catch(errorWithIngredients => {
+      .catch(_error => {
         this.setState({errorWithIngredients: true});
       });
   }
@@ -71,14 +76,28 @@ class BurgerBuilder extends Component {
     this.updatePurchasableState(updatedIngredients);
   }
 
-  updatePurchasableState (ingredients) {
-    const sum = Object.keys(ingredients)
+  sumTotalPrice(ingredients) {
+    return Object.keys(ingredients)
+      .map(ingredient => {
+        return ingredients[ingredient] * INGREDIENT_PRICES[ingredient];
+      })
+      .reduce((sum, value) => {
+        return sum + value;
+      }, INGREDIENT_PRICES['base']);
+  }
+
+  sumTotalIngredients(ingredients) {
+    return Object.keys(ingredients)
       .map(ingredient => {
         return ingredients[ingredient];
       })
       .reduce((sum, value) => {
         return sum + value;
       }, 0);
+  }
+
+  updatePurchasableState (ingredients) {
+    const sum = this.sumTotalIngredients(ingredients);
     this.setState({purchasable: sum > 0});
   }
 
@@ -145,7 +164,6 @@ class BurgerBuilder extends Component {
           className={classes.Item}
           ingredients={this.state.ingredients}
         />
-
         <BuildControls 
           className={classes.Item}
           price={this.state.totalPrice}
@@ -176,6 +194,8 @@ class BurgerBuilder extends Component {
           </Modal>
           
           {burger}
+
+
 
         </div>
 
