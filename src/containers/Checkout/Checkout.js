@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 
 import PropTypes from 'prop-types';
 import { Route } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import CheckoutSummary from '../../components/Order/CheckoutSummary/CheckoutSummary';
 import Layout  from '../../hoc/Layout/Layout';
@@ -9,19 +10,6 @@ import ContactData from './ContactData/ContactData';
 
 class Checkout extends Component {
 
-  state = {
-    ingredients: {},
-  }
-
-  UNSAFE_componentWillMount() {
-    const query = new URLSearchParams(this.props.location.search);
-    const ingredients = {};
-    for (let param of query.entries()) {
-      ingredients[param[0]] = +param[1];
-    }
-    this.setState({ingredients: ingredients});
-  }
-  
   onCheckoutCancelledHandler = () => {
     this.props.history.goBack();
   }
@@ -35,14 +23,14 @@ class Checkout extends Component {
     return(
       <Layout>
         <CheckoutSummary 
-          ingredients={this.state.ingredients}
+          ingredients={this.props.ings}
           onCheckoutCancelled={this.onCheckoutCancelledHandler}
           onCheckout={this.onCheckoutHandler}
         />
         <Route 
           path={this.props.match.path + '/contact-data'}
           render={(props) => <ContactData
-            ingredients={this.state.ingredients}
+            ingredients={this.props.ings}
             {...props}
           />}
         />
@@ -55,6 +43,14 @@ Checkout.propTypes = {
   history: PropTypes.object,
   location: PropTypes.object,
   match: PropTypes.object,
+  ings: PropTypes.object,
 };
 
-export default Checkout;
+const mapStateToProps = (state) => {
+  return {
+    ings: state.ingredients,
+    totalPrice: state.totalPrice,
+  };
+};
+
+export default connect(mapStateToProps)(Checkout);

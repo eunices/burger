@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 import classes from './ContactData.module.css';
 
@@ -102,8 +103,8 @@ class ContactData extends Component {
     }
     
     const order = {
-      ingredients: this.props.ingredients,
-      price: sumTotalPrice(this.props.ingredients), 
+      ingredients: this.props.ings,
+      price: sumTotalPrice(this.props.ings), 
       // calculate on server, potential for price manipulation
       customer: formData,
     };
@@ -198,7 +199,13 @@ class ContactData extends Component {
 
 ContactData.propTypes = {
   history: propTypes.object,
-  ingredients: propTypes.object,
+  ings: propTypes.object,
 };
 
-export default ContactData;
+const mapStateToProps = (state) => {
+  return {
+    ings: state.ingredients,
+  };
+};
+
+export default connect(mapStateToProps)(ContactData);
