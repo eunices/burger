@@ -1,15 +1,11 @@
-import * as actionTypes from './action';
-import { INGREDIENT_PRICES } from '../util/constants';
-import { bindActionCreators } from 'redux';
+import * as actionTypes from '../actions/actionTypes';
+import { INGREDIENT_PRICES } from '../../util/constants';
+import { sumTotalPrice } from '../../util/util';
 
 const initialState = {
-  ingredients: {
-    salad: 0,
-    bacon: 0,
-    cheese: 0,
-    meat: 0,
-  },
-  totalPrice: 4,
+  ingredients: null,
+  totalPrice: null,
+  error: false,
 };
 
 const reducer = (state = initialState, action) => {
@@ -31,6 +27,23 @@ const reducer = (state = initialState, action) => {
         [action.ingredientName]: state.ingredients[action.ingredientName] - 1,
       },
       totalPrice: state.totalPrice - INGREDIENT_PRICES[action.ingredientName],
+    };
+  case actionTypes.SET_INGREDIENTS:
+    return{
+      ...state,
+      ingredients: {
+        salad: action.ingredients.salad,
+        bacon: action.ingredients.bacon,
+        cheese: action.ingredients.cheese,
+        meat: action.ingredients.meat,
+      },
+      totalPrice: sumTotalPrice(action.ingredients),
+      error: false,
+    };
+  case actionTypes.FETCH_INGREDIENTS_FAILED:
+    return{
+      ...state,
+      error: true,
     };
   default:
     return state;

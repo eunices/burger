@@ -10,8 +10,8 @@ import ax from '../../../axios-orders';
 import Button from '../../../components/UI/Button/Button';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import Input from '../../../components/UI/Input/Input';
-import propTypes from 'prop-types';
-
+import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler';
+import * as actions from '../../../store/actions/index';
 
 class ContactData extends Component {
 
@@ -90,7 +90,6 @@ class ContactData extends Component {
 
     },
     isFormValid: false,
-    loading: false,
   }
 
   orderHandler = (e) => {
@@ -109,14 +108,7 @@ class ContactData extends Component {
       customer: formData,
     };
 
-    ax.post('/orders.json', order)
-      .then(_response => {
-        this.setState({loading: false});
-        this.props.history.push('/');
-      })
-      .catch(_error => {
-        this.setState({loading: false});
-      });
+    this.props.onOrderBurger(order);
 
   }
 
@@ -162,7 +154,7 @@ class ContactData extends Component {
       });
     }
 
-    const form = this.state.loading ? <Spinner/> : (
+    const form = this.props.loading ? <Spinner/> : (
       <React.Fragment>
         <form onSubmit={this.orderHandler}>
           {/* <Input elementType={} elementConfig={}/> */}
@@ -198,14 +190,25 @@ class ContactData extends Component {
 }
 
 ContactData.propTypes = {
-  history: propTypes.object,
-  ings: propTypes.object,
+  history: PropTypes.object,
+  ings: PropTypes.object,
+  onOrderBurger: PropTypes.func,
+  loading: PropTypes.bool,
 };
 
 const mapStateToProps = (state) => {
   return {
-    ings: state.ingredients,
+    ings: state.burgerBuilder.ingredients,
+    loading: state.order.loading,
   };
 };
 
-export default connect(mapStateToProps)(ContactData);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onOrderBurger: (orderData) => dispatch(actions.purchaseBurger(orderData)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(
+  withErrorHandler(ContactData, ax),
+);
