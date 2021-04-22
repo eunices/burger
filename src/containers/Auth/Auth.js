@@ -17,7 +17,6 @@ class Auth extends Component {
 
   state = {
     controls: {
-      
       email: {
         elementType: 'input',
         elementConfig: {
@@ -48,6 +47,8 @@ class Auth extends Component {
       },
     },
 
+    isSignUp: false,
+
   }
 
   inputChangedHandler = (event, id) => {
@@ -62,8 +63,14 @@ class Auth extends Component {
     e.preventDefault();
 
     const { email, password } = this.state.controls;
-    this.props.onAuth(email.value, password.value);
+    this.props.onAuth(email.value, password.value, this.state.isSignUp);
     
+  }
+
+  toggleSignUp = () => {
+    this.setState(prevState => {
+      return {isSignUp: !prevState.isSignUp};
+    });
   }
 
   render() {
@@ -77,13 +84,22 @@ class Auth extends Component {
           <Button buttontype="Success" disabled={false}>
             Submit
           </Button>
+         
         </form>
       </React.Fragment>
     );
 
     return(
       <div className={classes.Auth}>
+        <h2>{this.state.isSignUp ? 'Sign up' : 'Sign in'}</h2>
         {form}
+        <Button 
+          buttontype="Danger" 
+          disabled={false} 
+          onClick={this.toggleSignUp}
+        >
+            Switch to  {this.state.isSignUp ? 'sign in' : 'sign up'}
+        </Button>
       </div>
     );
   }
@@ -96,7 +112,7 @@ Auth.propTypes = {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onAuth: (email, password) => dispatch(actions.auth(email, password)),
+    onAuth: (email, password, isSignUp) => dispatch(actions.auth(email, password, isSignUp)),
   };
 };
 
