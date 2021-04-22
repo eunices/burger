@@ -2,7 +2,11 @@ import React, { Component } from 'react';
 
 import classes from './Auth.module.css';
 
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+
 import Button from '../../components/UI/Button/Button';
+import * as actions from '../../store/actions/index';
 import {
   convertDictToArr,
   arrToInput,
@@ -56,6 +60,10 @@ class Auth extends Component {
 
   orderHandler = (e) => {
     e.preventDefault();
+
+    const { email, password } = this.state.controls;
+    this.props.onAuth(email.value, password.value);
+    
   }
 
   render() {
@@ -81,4 +89,15 @@ class Auth extends Component {
   }
 }
 
-export default Auth;
+
+Auth.propTypes = {
+  onAuth: PropTypes.func,
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onAuth: (email, password) => dispatch(actions.auth(email, password)),
+  };
+};
+
+export default connect(null, mapDispatchToProps)(Auth);
