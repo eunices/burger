@@ -15,6 +15,7 @@ const authStart = (state, action) => {
 const authSuccess = (state, action) => {
   return updateObject(state, {
     idToken: action.idToken,
+    userId: action.userId,
     error: null,
     loading: false,
   });
@@ -30,6 +31,7 @@ const authFail = (state, action) => {
 const authLogout = (state, action) => {
   return updateObject(state, {
     idToken: null,
+    userId: null,
   });
 };
 
