@@ -12,6 +12,11 @@ import Spinner from '../../../components/UI/Spinner/Spinner';
 import Input from '../../../components/UI/Input/Input';
 import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler';
 import * as actions from '../../../store/actions/index';
+import { 
+  convertDictToArr,
+  arrToInput,
+  checkValidity,
+} from '../../../util/form';
 
 class ContactData extends Component {
 
@@ -116,7 +121,7 @@ class ContactData extends Component {
     const updatedOrderForm = {...this.state.orderForm};
     const updatedFormElement = {...updatedOrderForm[id]};
     updatedFormElement.value = event.target.value;
-    updatedFormElement.valid = updatedFormElement.validation ? this.checkValidity(
+    updatedFormElement.valid = updatedFormElement.validation ? checkValidity(
       updatedFormElement.value, updatedFormElement.validation,
     ) : true;
     updatedFormElement.touched = true;
@@ -130,55 +135,22 @@ class ContactData extends Component {
     this.setState({orderForm: updatedOrderForm, isFormValid: isFormValid});
   }
 
-  checkValidity(value, rules) {
-    let isValid = true;
 
-    if(rules.required) {
-      isValid = value.trim() !== '' && isValid;
-    }
-
-    if(rules.minLength) {
-      isValid = value.length >=  rules.minLength && isValid;
-    }
-
-    return isValid;
-  }
 
   render() {
 
-    const formElementsArray = [];
-    for (let key in this.state.orderForm) {
-      formElementsArray.push({
-        id: key, 
-        config: this.state.orderForm[key],
-      });
-    }
-
+    const formElementsArray = convertDictToArr(this.state.orderForm);
+    const formInputs = arrToInput(formElementsArray, this.inputChangedHandler);
     const form = this.props.loading ? <Spinner/> : (
       <React.Fragment>
         <form onSubmit={this.orderHandler}>
-          {/* <Input elementType={} elementConfig={}/> */}
-          {formElementsArray.map(el => {
-            return(
-              <Input
-                key={el.id}
-                elementType={el.config.elementType}
-                elementConfig={el.config.elementConfig}
-                value={el.config.value}
-                invalid={!el.config.valid}
-                shouldValidate={el.config.validation}
-                touched={el.config.touched}
-                changed={(event) => this.inputChangedHandler(event, el.id)}
-              />
-            );
-          })}
-          
+          {formInputs}
           <Button buttontype="Success" disabled={!this.state.isFormValid}>
             Order
           </Button>
         </form>
-      </React.Fragment>);
-    
+      </React.Fragment>
+    );
 
     return(
       <div className={classes.ContactData}>
