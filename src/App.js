@@ -14,7 +14,7 @@ import * as actions from './store/actions/index';
 
 class App extends Component {
   componentDidMount() {
-    // this.props.authCheckState();
+    this.props.authCheckState();
   }
 
   render() {
