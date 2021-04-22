@@ -16,7 +16,7 @@ import ax from '../../axios-orders';
 class Orders extends Component { 
 
   componentDidMount() {
-    this.props.onFetchOrders();
+    this.props.onFetchOrders(this.props.token);
   }
 
   render() {
@@ -45,17 +45,19 @@ Orders.propTypes = {
   onFetchOrders: PropTypes.func,
   loading: PropTypes.bool,
   orders: PropTypes.array,
+  token: PropTypes.string,
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     orders: state.order.orders,
+    token: state.auth.idToken,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onFetchOrders: () => dispatch(actions.fetchOrders()),
+    onFetchOrders: (token) => dispatch(actions.fetchOrders(token)),
   };
 };
 

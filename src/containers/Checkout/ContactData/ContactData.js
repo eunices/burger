@@ -113,7 +113,7 @@ class ContactData extends Component {
       customer: formData,
     };
 
-    this.props.onOrderBurger(order);
+    this.props.onOrderBurger(order, this.props.token);
 
   }
 
@@ -134,8 +134,6 @@ class ContactData extends Component {
 
     this.setState({orderForm: updatedOrderForm, isFormValid: isFormValid});
   }
-
-
 
   render() {
 
@@ -166,18 +164,22 @@ ContactData.propTypes = {
   ings: PropTypes.object,
   onOrderBurger: PropTypes.func,
   loading: PropTypes.bool,
+  token: PropTypes.string,
 };
 
 const mapStateToProps = (state) => {
   return {
     ings: state.burgerBuilder.ingredients,
     loading: state.order.loading,
+    token: state.auth.idToken,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onOrderBurger: (orderData) => dispatch(actions.purchaseBurger(orderData)),
+    onOrderBurger: (orderData, token) => dispatch(
+      actions.purchaseBurger(orderData, token),
+    ),
   };
 };
 
