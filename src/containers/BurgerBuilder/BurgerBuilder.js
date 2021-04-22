@@ -123,7 +123,7 @@ BurgerBuilder.propTypes = {
   error: PropTypes.bool,
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     ings: state.burgerBuilder.ingredients,
     totalPrice: state.burgerBuilder.totalPrice,

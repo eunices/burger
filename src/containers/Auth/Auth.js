@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import Button from '../../components/UI/Button/Button';
+import Spinner from '../../components/UI/Spinner/Spinner';
 import * as actions from '../../store/actions/index';
 import {
   convertDictToArr,
@@ -75,12 +76,16 @@ class Auth extends Component {
 
   render() {
 
+    const errorMsg = this.props.error ? (
+      <p>{this.props.error}</p>
+    ) : null;
+
     const formElementsArray = convertDictToArr(this.state.controls);
     const formInputs = arrToInput(formElementsArray, this.inputChangedHandler);
     const form = (
       <React.Fragment>
         <form onSubmit={this.orderHandler}>
-          {formInputs}
+          {this.props.loading ? <Spinner/> : formInputs}
           <Button buttontype="Success" disabled={false}>
             Submit
           </Button>
@@ -92,6 +97,7 @@ class Auth extends Component {
     return(
       <div className={classes.Auth}>
         <h2>{this.state.isSignUp ? 'Sign up' : 'Sign in'}</h2>
+        {errorMsg}
         {form}
         <Button 
           buttontype="Danger" 
@@ -108,12 +114,21 @@ class Auth extends Component {
 
 Auth.propTypes = {
   onAuth: PropTypes.func,
+  error: PropTypes.string,
+  loading: PropTypes.bool,
 };
 
-const mapDispatchToProps = dispatch => {
+const mapStateToProps = (state) => {
+  return {
+    loading: state.auth.loading,
+    error: state.auth.error,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
   return {
     onAuth: (email, password, isSignUp) => dispatch(actions.auth(email, password, isSignUp)),
   };
 };
 
-export default connect(null, mapDispatchToProps)(Auth);
+export default connect(mapStateToProps, mapDispatchToProps)(Auth);
