@@ -48,7 +48,6 @@ class BurgerBuilder extends Component {
   }
 
   render () {
-
     const disabledInfo = {...this.props.ings};
 
     for (let key in disabledInfo) {
@@ -81,6 +80,7 @@ class BurgerBuilder extends Component {
           ingredientRemoved={this.props.onIngredientRemoved}
           ordered={this.purchaseHandler}
           disabled={disabledInfo}
+          isAuthenticated={this.props.isAuthenticated}
         />
       </Hux>
     );
@@ -91,22 +91,15 @@ class BurgerBuilder extends Component {
 
     return (
       <Hux>
-
         <div className={classes.BurgerBuilder}>
-
           <Modal 
             visible={this.state.purchasing}
             modalClosed={this.modalClosedHandler}
           >
             {orderSummary}
           </Modal>
-          
           {burger}
-
-
-
         </div>
-
       </Hux>
     );
   }
@@ -121,6 +114,7 @@ BurgerBuilder.propTypes = {
   onInitPurchase: PropTypes.func,
   totalPrice: PropTypes.number,
   error: PropTypes.bool,
+  isAuthenticated: PropTypes.bool,
 };
 
 const mapStateToProps = (state) => {
@@ -128,6 +122,7 @@ const mapStateToProps = (state) => {
     ings: state.burgerBuilder.ingredients,
     totalPrice: state.burgerBuilder.totalPrice,
     error: state.burgerBuilder.error,
+    isAuthenticated: state.auth.idToken !== null,
   };
 };
 

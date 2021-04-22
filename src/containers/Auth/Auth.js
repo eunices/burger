@@ -4,6 +4,7 @@ import classes from './Auth.module.css';
 
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { Redirect } from 'react-router-dom';
 
 import Button from '../../components/UI/Button/Button';
 import Spinner from '../../components/UI/Spinner/Spinner';
@@ -94,8 +95,12 @@ class Auth extends Component {
       </React.Fragment>
     );
 
+    const authRedirect = this.props.isAuthenticated ? 
+      <Redirect to="/"/> : null;
+
     return(
       <div className={classes.Auth}>
+        {authRedirect}
         <h2>{this.state.isSignUp ? 'Sign up' : 'Sign in'}</h2>
         {errorMsg}
         {form}
@@ -116,12 +121,14 @@ Auth.propTypes = {
   onAuth: PropTypes.func,
   error: PropTypes.string,
   loading: PropTypes.bool,
+  isAuthenticated: PropTypes.bool,
 };
 
 const mapStateToProps = (state) => {
   return {
     loading: state.auth.loading,
     error: state.auth.error,
+    isAuthenticated: state.auth.idToken !== null,
   };
 };
 

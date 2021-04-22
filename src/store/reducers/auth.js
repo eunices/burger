@@ -30,7 +30,7 @@ const authFail = (state, action) => {
 
 const authLogout = (state, action) => {
   return updateObject(state, {
-    token: null, userId: null,
+    idToken: null, userId: null,
   });
 };
 

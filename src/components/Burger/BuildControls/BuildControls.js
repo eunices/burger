@@ -13,32 +13,43 @@ const controls = [
 ];
 
 const buildControls = (props) => {
+
+
+  // console.log('[build controls.js]', this.props);
+
+  const button = props.isAuthenticated ? 
+ 
+    <button 
+      className={classes.OrderButton}
+      disabled={!props.purchasable | props.purchasing}
+      onClick={props.ordered}
+    >
+        Order
+    </button>
+    :
+    <button 
+      className={classes.OrderButton}
+      disabled
+    >
+      Sign in to continue
+    </button>;
+
   return(
     <div className={classes.BuildControls}>
-      
       <p>Price: <b>SGD {props.price.toFixed(2)}</b></p>
-
-      {
-        controls.map(control => {
-          return (
-            <BuildControl 
-              key={control.label} 
-              label={control.label}
-              added={() => props.ingredientAdded(control.type)}
-              removed={() => props.ingredientRemoved(control.type)}
-              disabled={props.disabled[control.type]}
-              disableAll={props.purchasing}
-            />
-          );
-        })
-      }
-      <button 
-        className={classes.OrderButton}
-        disabled={!props.purchasable | props.purchasing}
-        onClick={props.ordered}
-      >
-        Order
-      </button>
+      {controls.map(control => {
+        return (
+          <BuildControl 
+            key={control.label} 
+            label={control.label}
+            added={() => props.ingredientAdded(control.type)}
+            removed={() => props.ingredientRemoved(control.type)}
+            disabled={props.disabled[control.type]}
+            disableAll={props.purchasing}
+          />
+        );
+      })}
+      {button}
     </div>
   );
 

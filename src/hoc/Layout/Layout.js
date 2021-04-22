@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 import classes from './Layout.module.css';
 
@@ -36,6 +37,7 @@ class Layout extends Component {
           closed={this.sidedrawerClosedHandler}
         />
         <Toolbar
+          isAuthenticated={this.props.isAuth}
           clicked={this.sidedrawerToggleHandler}
         />
         <main className={classes.Content}>
@@ -48,6 +50,13 @@ class Layout extends Component {
 
 Layout.propTypes = {
   children: PropTypes.node,
+  isAuth: PropTypes.bool,
 };
 
-export default Layout;
+const mapStateToProps = (state) => {
+  return {
+    isAuth: state.auth.idToken !== null,
+  };
+};
+
+export default connect(mapStateToProps, null)(Layout);
