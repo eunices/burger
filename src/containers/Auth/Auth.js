@@ -78,7 +78,7 @@ class Auth extends Component {
   render() {
 
     const errorMsg = this.props.error ? (
-      <p>{this.props.error}</p>
+      <p>{this.props.error.response.data.error.message}</p>
     ) : null;
 
     const formElementsArray = convertDictToArr(this.state.controls);
@@ -119,7 +119,7 @@ class Auth extends Component {
 
 Auth.propTypes = {
   onAuth: PropTypes.func,
-  error: PropTypes.string,
+  error: PropTypes.object,
   loading: PropTypes.bool,
   isAuthenticated: PropTypes.bool,
 };
