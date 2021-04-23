@@ -54,7 +54,6 @@ export const auth = (email, password, isSignUp) => {
       url = `${BASE_URL}accounts:signInWithPassword`;
     }
     
-    console.log('[key]', process.env.REACT_APP_API_KEY);
     const key = process.env.REACT_APP_API_KEY;
     axios.post(`${url}?key=${key}`, authData)
       .then(response => {
