@@ -6,12 +6,13 @@ This was based off the course ["React - The Complete Guide (incl Hooks, React Ro
 - Class based
 - Mobile first
 - Redux store
+- Higher order components
+
 ### Features
 - Get and post data to firebase
 - User interface
 - Authentication
   - Protected routes
-
 
 ## Docs for Create React App
 
