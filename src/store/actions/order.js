@@ -61,10 +61,13 @@ export const fetchOrdersStart = () => {
   };
 };
 
-export const fetchOrders = (token) => {
+export const fetchOrders = (token, userId) => {
   return dispatch => {
 
-    ax.get('/orders.json?auth=' + token)
+
+    const url = 
+      '/orders.json?auth=' + token + '&orderBy="userId"&equalTo="' + userId + '"';
+    ax.get(url)
       .then(response => {
         const orders = Object.keys(response.data)
           .map(key => {

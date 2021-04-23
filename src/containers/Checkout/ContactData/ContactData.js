@@ -111,6 +111,7 @@ class ContactData extends Component {
       price: sumTotalPrice(this.props.ings), 
       // calculate on server, potential for price manipulation
       customer: formData,
+      userId: this.props.userId,
     };
 
     this.props.onOrderBurger(order, this.props.token);
@@ -165,6 +166,7 @@ ContactData.propTypes = {
   onOrderBurger: PropTypes.func,
   loading: PropTypes.bool,
   token: PropTypes.string,
+  userId: PropTypes.string,
 };
 
 const mapStateToProps = (state) => {
@@ -172,6 +174,7 @@ const mapStateToProps = (state) => {
     ings: state.burgerBuilder.ingredients,
     loading: state.order.loading,
     token: state.auth.idToken,
+    userId: state.auth.userId,
   };
 };
 
